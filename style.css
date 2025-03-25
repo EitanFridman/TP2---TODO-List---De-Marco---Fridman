@@ -1,0 +1,8 @@
+.tarea {
+    display: flex;
+    border: 1px solid black;
+}
+
+.subirTarea img {
+    width: 13px;
+}
