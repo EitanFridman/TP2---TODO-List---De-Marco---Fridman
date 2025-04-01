@@ -33,7 +33,7 @@ function subirTarea(titulo) {
     const tarea = {
         titulo: titulo,
         creada: timestamp,
-        resuelta: null // No está resuelta aún
+        resuelta: null
     };
 
     tareas.push(tarea);
@@ -50,7 +50,7 @@ function renderizarTareas() {
 
         let botonCheckout = document.createElement("button");
         botonCheckout.classList.add("checkout");
-        botonCheckout.textContent = tarea.resuelta ? "\u2713" : "Tachar";
+        botonCheckout.textContent = tarea.resuelta ? "\u2713" : "Tachar";  // u2713 es un tick
         botonCheckout.addEventListener("click", () => marcarTareaResuelta(index));
 
         let p = document.createElement("p");
@@ -93,7 +93,7 @@ function tareaMasRapida() {
     alert(`La tarea más rápida fue "${tareaRapida.titulo}", realizada en ${(tareaRapida.resuelta - tareaRapida.creada) / 1000} segundos.`);
 }
 
-// Botón para ver la tarea más rápida
+// Boton para ver la tarea más rápida
 let botonMasRapida = document.createElement("button");
 botonMasRapida.textContent = "Tarea más rápida";
 botonMasRapida.addEventListener("click", tareaMasRapida);
