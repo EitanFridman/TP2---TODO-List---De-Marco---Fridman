@@ -1,100 +1,103 @@
-let botonAgregar = document.querySelector(".crear-tarea");
+let botonAgregar = document.querySelector(".boton-crear-tarea");
 let contenedorTareas = document.querySelector(".contenedor-tareas");
 let contenedorTareasResueltas = document.querySelector(".contenedor-tareas-resueltas");
+let botonMasRapida = document.querySelector(".boton-mas-rapida");
 
 let tareas = [];
+let tareasResueltas = [];
+let idActual = 0;
 
 const crearInput = () => {
-    let nuevaTarea = document.createElement("div");
-    nuevaTarea.classList.add("nuevaTarea");
+    let nuevaTarea = `
+    <div class="nueva-tarea">
+        <input type="text" id="titulo-nueva-tarea">
+        <button class="boton-subir-tarea" onclick="subirTarea()">
+            <img src="img/arrow-up.svg" alt="" class="img-subir-tarea">
+        </button>
+    </div>`;
 
-    let inputTarea = document.createElement("input");
-    inputTarea.type = "text";
-    inputTarea.classList.add("tituloNuevaTarea");
-
-    let botonSubir = document.createElement("button");
-    botonSubir.classList.add("subirTarea");
-    botonSubir.textContent = "Agregar";
-
-    nuevaTarea.appendChild(inputTarea);
-    nuevaTarea.appendChild(botonSubir);
-    contenedorTareas.prepend(nuevaTarea);
-
-    botonSubir.addEventListener("click", () => subirTarea(inputTarea.value));
+    contenedorTareas.insertAdjacentHTML('afterbegin', nuevaTarea);
 };
 
-botonAgregar.addEventListener("click", crearInput);
+botonAgregar.addEventListener("click", () => crearInput());
 
-function subirTarea(titulo) {
-    if (!titulo.trim()) return;
+function subirTarea() {
+    let tituloNuevaTarea = document.getElementById('titulo-nueva-tarea').value;
 
-    let timestamp = Date.now();
-
-    const tarea = {
-        titulo: titulo,
-        creada: timestamp,
-        resuelta: null
-    };
-
-    tareas.push(tarea);
-    renderizarTareas();
-}
-
-function renderizarTareas() {
-    contenedorTareas.innerHTML = "";
-    contenedorTareasResueltas.innerHTML = "";
-
-    tareas.forEach((tarea, index) => {
-        let divTarea = document.createElement("div");
-        divTarea.classList.add("tarea");
-
-        let botonCheckout = document.createElement("button");
-        botonCheckout.classList.add("checkout");
-        botonCheckout.textContent = tarea.resuelta ? "\u2713" : "Tachar";  // u2713 es un tick
-        botonCheckout.addEventListener("click", () => marcarTareaResuelta(index));
-
-        let p = document.createElement("p");
-        p.textContent = `${tarea.titulo} - Creada: ${new Date(tarea.creada).toLocaleString()}`;
-
-        divTarea.appendChild(botonCheckout);
-        divTarea.appendChild(p);
-
-        if (tarea.resuelta) {
-            let tiempoResuelto = document.createElement("p");
-            tiempoResuelto.textContent = `Resuelta: ${new Date(tarea.resuelta).toLocaleString()}`;
-            divTarea.appendChild(tiempoResuelto);
-            contenedorTareasResueltas.appendChild(divTarea);
-        } else {
-            contenedorTareas.appendChild(divTarea);
-        }
-    });
-}
-
-function marcarTareaResuelta(index) {
-    if (!tareas[index].resuelta) {
-        tareas[index].resuelta = Date.now();
-    }
-    renderizarTareas();
-}
-
-function tareaMasRapida() {
-    let tareasResueltas = tareas.filter(t => t.resuelta);
-    
-    if (tareasResueltas.length === 0) {
-        alert("No hay tareas resueltas.");
+    if (tituloNuevaTarea == "") {
         return;
     }
 
-    let tareaRapida = tareasResueltas.reduce((min, tarea) => {
-        let tiempo = tarea.resuelta - tarea.creada;
-        return tiempo < (min.resuelta - min.creada) ? tarea : min;
-    });
+    let tarea = {
+        id: idActual++,
+        titulo: tituloNuevaTarea,
+        tiempoCreacion: Date.now(),
+        tiempoResolucion: null
+    };
 
-    alert(`La tarea más rápida fue "${tareaRapida.titulo}", realizada en ${(tareaRapida.resuelta - tareaRapida.creada) / 1000} segundos.`);
+    tareas.push(tarea);
+
+    traerTareas();
 }
 
-// Boton para ver la tarea más rápida
-let botonMasRapida = document.createElement("button");
-botonMasRapida.textContent = "Tarea más rápida";
-botonMasRapida.addEventListener("click", tareaMasRapida);
-document.body.appendChild(botonMasRapida);
+function traerTareas() {
+    contenedorTareas.innerHTML = "";
+    tareas.forEach(tarea => {
+        let divTarea = `
+        <div class="tarea" id="tarea-${tarea.id}">
+            <button class="boton-checkout" onclick="marcarTareaResuelta(${tarea.id})"></button>
+            <p>${tarea.titulo} <small>(${new Date(tarea.tiempoCreacion).toLocaleString()})</small></p>
+            <button class="boton-eliminar" onclick="eliminarTarea(${tarea.id})">X</button>
+        </div>`;
+        contenedorTareas.insertAdjacentHTML('afterbegin', divTarea);
+    });
+}
+
+function marcarTareaResuelta(id) {
+    let tareaResuelta = tareas[id];
+    tareaResuelta.tiempoResolucion = Date.now();
+    tareasResueltas.push(tareaResuelta);
+    tareas.splice(id, 1);
+
+    traerTareas();
+    mostrarTareasResueltas();
+}
+
+function mostrarTareasResueltas() {
+    contenedorTareasResueltas.innerHTML = "";
+    tareasResueltas.forEach(tarea => {
+        let tiempoResolucion = ((tarea.tiempoResolucion - tarea.tiempoCreacion) / 1000).toFixed(2);
+        let divTarea = `
+        <div class="tarea tarea-resuelta">
+            <p>${tarea.titulo} <small>(${new Date(tarea.tiempoResolucion).toLocaleString()})</small> - Tiempo: ${tiempoResolucion} seg</p>
+        </div>`;
+        contenedorTareasResueltas.insertAdjacentHTML('afterbegin', divTarea);
+    });
+}
+
+function tareaMasRapida() {
+    if (tareasResueltas.length === 0) {
+        alert("No hay tareas resueltas aún.");
+        return;
+    }
+    let tareaMasRapida = tareasResueltas[0];
+    for (let i = 1; i < tareasResueltas.length; i++) {
+        let tiempoA = tareasResueltas[i].tiempoResolucion - tareasResueltas[i].tiempoCreacion;
+        let tiempoB = tareaMasRapida.tiempoResolucion - tareaMasRapida.tiempoCreacion;
+        if (tiempoA < tiempoB) {
+            tareaMasRapida = tareasResueltas[i];
+        }
+    }
+    let tiempoResolucion = ((tareaMasRapida.tiempoResolucion - tareaMasRapida.tiempoCreacion) / 1000).toFixed(2);
+    alert("La tarea más rápida fue \"" + tareaMasRapida.titulo + "\" con un tiempo de " + tiempoResolucion + " segundos.");
+}
+
+function eliminarTarea(id) {
+    for (let i = 0; i < tareas.length; i++) {
+        if (tareas[i].id === id) {
+            tareas.splice(i, 1);
+            break;
+        }
+    }
+    traerTareas();
+}
