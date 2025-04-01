@@ -1,8 +1,104 @@
-.tarea {
-    display: flex;
-    border: 1px solid black;
+/* General */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    text-align: center;
+    padding: 20px;
 }
 
-.subirTarea img {
-    width: 13px;
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.crear-tarea {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.contenedor-tareas, .contenedor-tareas-resueltas {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.contenedor-tareas {
+    background: white;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.contenedor-tareas-resueltas {
+    background: #d4edda;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo de cada tarea */
+.tarea {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.tarea p {
+    flex: 1;
+    text-align: left;
+    margin: 0;
+    padding-left: 10px;
+}
+
+/* Estilo de tareas resueltas */
+.tarea-resuelta {
+    background: #d4edda;
+}
+
+.tarea-resuelta p {
+    text-decoration: line-through;
+    color: gray;
+}
+
+/* Botón de marcar tarea */
+.checkout {
+    background: #00D26A;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.checkout:hover {
+    background: #cc0000;
+}
+
+/* Input y botón de subir tarea */
+.nuevaTarea {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.nuevaTarea input {
+    padding: 10px;
+    width: 60%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
 }
